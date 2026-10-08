@@ -1,4 +1,24 @@
+# Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*.egg-info/
+.venv/
+.build-venv/
+
+# Build / packaging outputs
+build/
+dist/
+*.spec
+
+# Tooling
+.ruff_cache/
+.pytest_cache/
+.idea/
+.vscode/
+.claude/
+
+# OS
 .DS_Store
+
+# Local scratch
+work_log.txt

@@ -8,23 +8,22 @@ write a `uv = <version>` line into it. This tool scans a directory tree for
 those markers, then reads each venv's site-packages to list packages without
 having to activate or invoke anything.
 
-GUI (default):   python venvfinder.py
-CLI:             python venvfinder.py --cli ~/projects
-                 python venvfinder.py --cli ~/projects --uv-only --packages
-                 python venvfinder.py --cli ~/projects --json out.json
+GUI (default):   venvfinder
+CLI:             venvfinder --cli ~/projects
+                 venvfinder --cli ~/projects --uv-only --packages
+                 venvfinder --cli ~/projects --json out.json
 
-Stdlib only — no dependencies. Run it however you like, e.g. `uv run venvfinder.py`.
+Stdlib only — no dependencies. Try it without installing: `uvx venvfinder`.
 """
 from __future__ import annotations
 
 import argparse
 import json
 import os
-import platform
 import subprocess
 import sys
 import time
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 # Directories that never contain a venv worth reporting and are expensive to walk.
@@ -405,7 +404,7 @@ def run_gui(scale: float | None = None, font_size: int | None = None) -> int:
         import re
         import tkinter as tk
         import tkinter.font as tkfont
-        from tkinter import ttk, filedialog, messagebox
+        from tkinter import filedialog, messagebox, ttk
     except Exception:
         print("tkinter is not available; use the CLI mode instead:", file=sys.stderr)
         print("  python venvfinder.py --cli <directory> --packages", file=sys.stderr)
@@ -745,7 +744,7 @@ def run_gui(scale: float | None = None, font_size: int | None = None) -> int:
             ttk.Button(opts, text="A+", width=3, command=lambda: self._bump_font(1)).pack(side="right", padx=(0, 8))
             self.zoom_lbl = ttk.Label(opts, text=f"{self.font_size}pt", width=5, anchor="center")
             self.zoom_lbl.pack(side="right")
-            ttk.Button(opts, text="A−", width=3, command=lambda: self._bump_font(-1)).pack(side="right")
+            ttk.Button(opts, text="A−", width=3, command=lambda: self._bump_font(-1)).pack(side="right")  # noqa: RUF001
             ttk.Label(opts, text="Text size:").pack(side="right", padx=(12, 4))
 
         def _build_panes(self):
@@ -894,7 +893,7 @@ def run_gui(scale: float | None = None, font_size: int | None = None) -> int:
             self.stop_btn.configure(state="disabled")
             # Offer only the base types actually present, keeping the selection.
             present = sorted({classify_base(v.home) for v in self.venvs})
-            self.base_combo["values"] = ["All"] + present
+            self.base_combo["values"] = ["All", *present]
             if self.base_filter_var.get() not in ("All", *present):
                 self.base_filter_var.set("All")
                 self._render_list()
@@ -1006,6 +1005,12 @@ def run_gui(scale: float | None = None, font_size: int | None = None) -> int:
 
 # --------------------------------------------------------------------------- #
 def main(argv=None) -> int:
+    # A windowed (no-console) build, e.g. a PyInstaller .app launched from
+    # Finder, has no stdout/stderr; give print() somewhere harmless to go.
+    if sys.stdout is None:
+        sys.stdout = open(os.devnull, "w")
+    if sys.stderr is None:
+        sys.stderr = open(os.devnull, "w")
     parser = argparse.ArgumentParser(description="Locate and inspect Python virtual environments.")
     parser.add_argument("--cli", dest="path", metavar="DIR",
                         help="run headless: scan DIR and print results (no GUI)")
