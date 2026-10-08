@@ -1,6 +1,6 @@
 [project]
 name = "venvfinder"
-version = "0.1.0"
+version = "0.1.1"
 description = "Find and inspect Python virtual environments (uv, venv, virtualenv, conda) on disk — GUI and CLI"
 readme = "README.md"
 license = "BSD-3-Clause"
@@ -33,9 +33,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/saltikov/venvfinder"
-Repository = "https://github.com/saltikov/venvfinder"
-Issues = "https://github.com/saltikov/venvfinder/issues"
+Homepage = "https://github.com/csaltikov/venvfinder"
+Repository = "https://github.com/csaltikov/venvfinder"
+Issues = "https://github.com/csaltikov/venvfinder/issues"
 
 [project.scripts]
 venvfinder = "venvfinder.app:main"

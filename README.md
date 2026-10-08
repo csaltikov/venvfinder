@@ -67,7 +67,7 @@ the first time.
 ## Development
 
 ```bash
-git clone https://github.com/saltikov/venvfinder
+git clone https://github.com/csaltikov/venvfinder
 cd venvfinder
 uv sync                 # creates .venv with the dev tools
 uv run venvfinder       # run from source
